@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Riyadh Map with Pulsating Markers</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; width: 100%; }
+
+        /* CSS for pulsating effect */
+        .pulsating-marker {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Riyadh Map with Pulsating Markers</h1>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Hardcoded data for Riyadh locations
+        const data = [
+            { latitude: 24.7111, longitude: 46.6742, tooltip: 'Kingdom Centre' },
+            { latitude: 24.6883, longitude: 46.6844, tooltip: 'Al Faisaliah Tower' },
+            { latitude: 24.7842, longitude: 46.7276, tooltip: 'Riyadh Park Mall' },
+            { latitude: 24.9576, longitude: 46.6988, tooltip: 'King Khalid Airport' },
+            { latitude: 24.7373, longitude: 46.5727, tooltip: 'Diriyah Historical' },
+            { latitude: 24.7883, longitude: 46.6419, tooltip: 'Riyadh Front' }
+        ];
+
+        // Initialize the map centered on Riyadh
+        const map = L.map('map').setView([24.7136, 46.6753], 12); // Centered on Riyadh
+
+        // Add a tile layer (e.g., OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Store markers in an array to manage them dynamically
+        let markers = [];
+
+        // Function to add pulsating markers
+        function addMarker(lat, lng, tooltip) {
+            // Create a custom icon with a pulsating effect
+            const icon = L.divIcon({
+                className: 'pulsating-marker', // Apply the CSS class
+                html: '<div style="background-color: red; width: 20px; height: 20px; border-radius: 50%;"></div>', // Custom marker HTML
+                iconSize: [20, 20], // Size of the icon
+                iconAnchor: [10, 10] // Center the icon
+            });
+
+            // Add the marker to the map
+            const marker = L.marker([lat, lng], { icon }).addTo(map);
+            if (tooltip) {
+                marker.bindTooltip(tooltip);
+            }
+
+            // Add marker to the array
+            markers.push(marker);
+        }
+
+        // Add markers for each data point
+        data.forEach(point => {
+            console.log("Adding marker at:", point.latitude, point.longitude, "Tooltip:", point.tooltip);
+            addMarker(
+                point.latitude,
+                point.longitude,
+                point.tooltip // Optional tooltip text
+            );
+        });
+    </script>
+</body>
+</html>
